@@ -1,45 +1,42 @@
 require_relative "constants.rb"
+require_relative "grid.rb"
+
+GRID_TRANSLATION = {  "0" => 0, "1" => 1, "2" => 2,
+                      "3" => 7, "4" => 8, "5" => 3,
+                      "6" => 6, "7" => 5, "8" => 4 }
 
 class Board
   attr_reader :state
   
   def initialize
-    @moves = INITIAL_BOARD.dup
+    @grid  = Grid.new
     @state = :open
   end
   
   def add(token,position)
-    raise RangeError unless in_range?(position)
-    raise RuntimeError unless available?(position)
-
-    @moves.sub!(%r(#{position}),token)
+    grid_position = GRID_TRANSLATION[position]
+    @grid.add(token,grid_position)
 
     @state = check_state
   end
   
   def show
-    @moves
-  end
-  
-  def in_range?(position)
-    position =~ /[0-8]/
-  end
-  
-  def available?(position)
-    @moves =~ /#{position}/
-  end
-  
-  def full?
-    @moves !~ /[0-8]/
+    display = INITIAL_BOARD.dup
+    inverted = GRID_TRANSLATION.invert
+    
+    [X_TOKEN,O_TOKEN].each do |token|
+      grid_moves = @grid.has_moved(token)
+      grid_moves.each do |grid_move|
+        display_move = inverted[grid_move]
+        display.sub!(%r(#{display_move}),token)
+      end
+    end
+    
+    display
   end
   
   def check_state
-    return :draw if full?
-    return :x_win if winner?(X_TOKEN)
-  end
-  
-  def winner?(token)
-    false
+    @grid.check_state
   end
   
 end

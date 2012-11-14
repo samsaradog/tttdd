@@ -4,37 +4,53 @@ TODO
 --------------------------------
 Accept input from a player
 Determine which player moves first
-Determine whether a given move is available
-Determine whether a player has won
-Recognizes a winning game <-
 Notify user of game states: Move Available/Draw Game/Winning Game/Losing Game
 
 DONE
 --------------------------------
 Display an empty game
 Add input and display the altered game correctly
+Determine whether a given move is available
+Determine whether a player has won
+Recognizes a winning game <-
 
 Board
 
 TODO
 --------------------------------
 
-Translate from internal representation to external(Game)
-Recognize a winning configuration
 
 DONE
 --------------------------------
 Recognize a draw game
 Reject a move out of range
 Reject an unavailable move
+Translate from internal representation(Grid) to external
+Recognize a winning configuration
 
 Brain
 
 TODO
 --------------------------------
-Block a possible win
 Make a winning move
 Find the best next move
 
 DONE
 --------------------------------
+Block a possible win
+
+Grid
+
+TODO
+--------------------------------
+
+DONE
+--------------------------------
+Accepts moves
+Throws RangeError for out of range move
+Throws RuntimeError for move not available
+Tell what moves are available
+Check for winning game
+Tell whether grids match (rotational symmetry)
+Group equivalent moves
+
