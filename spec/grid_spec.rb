@@ -119,6 +119,7 @@ describe "Grid" do
     grouped_moves.include?([0,2,4,6]).should == true
     grouped_moves.include?([1,3,5,7]).should == true
     grouped_moves.include?([8]).should == true
+    grouped_moves.flatten.sort.should == grouped_moves.flatten.sort.uniq
   end
   
   it "duplicates correctly" do

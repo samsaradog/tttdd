@@ -241,7 +241,7 @@ describe "Tree" do
     
   end
   
-  context "O draw depth 6" do
+  context "O draw depth 5" do
     #  O | X |  
     # ----------
     #    | X |  
@@ -260,6 +260,29 @@ describe "Tree" do
     
     it "should have the move 5" do
       @node.move.should == 5
+    end
+    
+  end
+  
+  context "X draw depth 6" do
+    #    |   |  
+    # ----------
+    #    | O | O
+    # ----------
+    #   |   | X 
+    
+    before(:each) do
+      [4].each   { | pos | @grid.add(X_TOKEN,pos)}
+      [3,8].each { | pos | @grid.add(O_TOKEN,pos)}
+      @node = MaxNode.new(@grid)
+    end
+    
+    it "should have the move 7" do
+      @node.move.should == 7
+    end
+    
+    it "should have the value 0" do
+      @node.value.should == 0
     end
     
   end

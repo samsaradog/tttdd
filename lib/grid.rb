@@ -141,11 +141,11 @@ class Grid
       bucket_grid.add(token,bucket[0])
 
       if ( 0 <= grid.match(bucket_grid))
-        found = true
         bucket << move
+        return_value = true
+        break
       end
     end
-    
     return_value
   end
   

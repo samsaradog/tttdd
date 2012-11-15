@@ -34,4 +34,8 @@ describe "Board" do
     end
   end
   
+  it "returns the move as a character" do
+    @board.generate_x_move.should match(/[0-8]/)
+  end
+  
 end

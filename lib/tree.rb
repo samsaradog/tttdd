@@ -29,6 +29,7 @@ class MinNode < TreeNode
   
   def minimax(grid, min, max)
     available_moves = grid.group_moves(O_TOKEN).shuffle
+    
     @value = max
     current_move = nil
     
@@ -71,6 +72,7 @@ class MaxNode < TreeNode
   
   def minimax(grid, min, max)
     available_moves = grid.group_moves(X_TOKEN).shuffle
+    
     @value = min
     current_move = nil
     

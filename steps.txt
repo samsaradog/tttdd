@@ -2,11 +2,6 @@ Game
 
 TODO
 --------------------------------
-Accept input from a player
-Determine which player moves first
-Notify user of game states: Move Available/Draw Game/Winning Game/Losing Game
-Game initializes correctly - calls output with right message,
-    calls generate_move and add to board when necessary
 
 DONE
 --------------------------------
@@ -14,7 +9,18 @@ Display an empty game
 Add input and display the altered game correctly
 Determine whether a given move is available
 Determine whether a player has won
-Recognizes a winning game <-
+Recognizes a winning game
+Initializes game correctly - human move first and computer move first
+Initializes when asked for a new game
+Validates user input
+Accept input from a player
+Determine which player moves first
+Notify user of game states: Move Available/Draw Game/Winning Game/Losing Game
+Game initializes correctly - calls output with right message,
+    calls generate_move and add to board when necessary
+Fails gracefully when it gets a bad move
+Asks for another move if game not finished
+Asks for another game if game is finished
 
 Board
 
@@ -29,6 +35,7 @@ Reject a move out of range
 Reject an unavailable move
 Translate from internal representation(Grid) to external
 Recognize a winning configuration
+Translate the grid move correctly
 
 Brain
 
@@ -56,3 +63,16 @@ Check for winning game
 Tell whether grids match (rotational symmetry)
 Group equivalent moves
 
+Tree
+
+TODO
+--------------------------------
+
+DONE
+--------------------------------
+Detect a draw game
+Detect a game where X wins/O wins
+Detect an X winning/O winning game with one move left
+Detect an X losing/O winning game with two moves left
+
+Detect a draw game, O moving next, with 1-9 moves left
