@@ -1,4 +1,4 @@
-require_relative "../lib/grid.rb"
+require_relative "../lib/grid"
 
 describe "Grid" do
   before(:each) do
@@ -47,9 +47,20 @@ describe "Grid" do
       [0,6,7].each { |x| @grid.add(X_TOKEN,x) }
       @grid.has_winner?(X_TOKEN).should == true
     end
+    
+    it "recognizes edge winning configuration when grid full" do
+      [0,2,5,6,7].each { | move | @grid.add(X_TOKEN,move)}
+      [1,3,4,8].each { | move | @grid.add(O_TOKEN,move)}
+      @grid.has_winner?(X_TOKEN).should == true
+    end
 
     it "recognizes a configuration that is not a win" do
       (1..3).each { |x| @grid.add(X_TOKEN,x) }
+      @grid.has_winner?(X_TOKEN).should_not == true
+    end
+    
+    it "recognizes another configuration that is not a win" do
+      [4,8].each { |x| @grid.add(X_TOKEN,x) }
       @grid.has_winner?(X_TOKEN).should_not == true
     end
 
@@ -59,12 +70,13 @@ describe "Grid" do
     end
 
     it "recognizes a draw configuration" do
-      (0..8).each { |x| @grid.add(X_TOKEN,x) }
+      [1,2,4,5,7].each { |move| @grid.add(X_TOKEN,move) }
+      [0,3,6,8].each   { |move| @grid.add(O_TOKEN,move) }
       @grid.is_draw?.should == true
     end
 
     it "recognizes a configuration that is not a draw" do
-      (0..7).each { |x| @grid.add(X_TOKEN,x) }
+      (0..2).each { |x| @grid.add(X_TOKEN,x) }
       @grid.is_draw?.should_not == true
     end
     

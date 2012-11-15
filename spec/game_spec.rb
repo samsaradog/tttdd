@@ -1,4 +1,4 @@
-require_relative "../lib/game.rb"
+require_relative "../lib/game"
 
 
 describe "Game" do
@@ -74,6 +74,64 @@ describe "Game" do
       @game.show.should == @display
     end
     
+  end
+  
+  context "initializes game correctly" do
+    before(:each) do
+      @game = Game.new
+    end
+    
+    it "initializes correctly when human goes first" do
+      @game.stub(:human_first?).and_return(true)
+      @game.should_receive(:output).once
+      @game.initialize_game
+    end
+    
+    it "initializes correctly when computer goes first" do
+      @game.stub(:human_first?).and_return(false)
+      @game.should_receive(:output).once
+      @game.should_receive(:generate_move).once
+      @game.should_receive(:move).once
+      @game.initialize_game
+    end
+  end
+  
+  context "validates user input" do
+    before(:each) do
+      @game = Game.new
+    end
+    
+    it "returns true for correct input" do
+      @game.stub(:state).and_return(:open)
+      inputs = ["y","Y","Q","q","X","x"]
+      inputs += ("0".."8").to_a
+      inputs.each { |x| @game.validate_input(x).should == true }
+      
+    end
+    
+    it "returns false for bad input" do
+      @game.stub(:state).and_return(:draw)
+      inputs = ["ab","9","8"]
+      inputs.each { |x| @game.validate_input(x).should == nil }
+    end
+  end
+  
+  context "routes user input correctly" do
+    before(:each) do
+      @game = Game.new
+    end
+    
+    it "calls initialize when asked for a new game" do
+      @game.stub(:validate_input).and_return(true)
+      @game.should_receive(:initialize_game)
+      @game.add_response("y").should == true
+    end
+    
+    it "calls output and returns false when asked to quit" do
+      @game.stub(:validate_input).and_return(true)
+      @game.should_receive(:output)
+      @game.add_response("n").should == false
+    end
   end
   
 end

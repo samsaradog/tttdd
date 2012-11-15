@@ -1,17 +1,18 @@
-require_relative "constants.rb"
+require_relative "tree"
 
 class Brain
-  def initialize
     
+  def x_move(grid)
+    raise RuntimeError if grid.grid_full?
+    
+    node = MaxNode.new(grid)
+    node.move
   end
   
-  def best_move(grid)
-    o_moved = grid.has_moved(O_TOKEN)
-    available_moves = grid.available
+  def o_move(grid)
+    raise RuntimeError if grid.grid_full?
     
-    available_moves.each do |move|
-      return move if ( grid.game_winner?(o_moved + [move]))
-    end
-    -1
+    node = MinNode.new(grid)
+    node.move
   end
 end

@@ -1,4 +1,4 @@
-require_relative "constants.rb"
+require_relative "constants"
 
 CENTER_POSITION = 8
 OUTSIDE_SIZE    = 8
@@ -7,7 +7,7 @@ class Grid
   attr_reader :center, :outside
   
   def initialize
-    @outside = Hash.new
+    @outside = {}
     (0..7).to_a.each { |x| @outside[x] = Z_TOKEN }
     @center = { CENTER_POSITION => Z_TOKEN }
   end
@@ -42,24 +42,28 @@ class Grid
     has_moved(Z_TOKEN)
   end
   
-  def has_moved(token)
-    h = @outside.merge(@center)
-    h.select { |k,v| token == v }.keys
+  def grid_full?
+    available.empty?
+  end
+  
+  def is_draw?
+    :draw == state
+  end
+  
+  def state
+    return :x_win if has_winner?(X_TOKEN)
+    return :o_win if has_winner?(O_TOKEN)
+    return :draw  if grid_full?
+    :open
   end
   
   def has_winner?(token)
     game_winner?(has_moved(token))
   end
   
-  def is_draw?
-    available.empty?
-  end
-  
-  def check_state
-    return :draw  if is_draw?
-    return :x_win if has_winner?(X_TOKEN)
-    return :o_win if has_winner?(O_TOKEN)
-    :open
+  def has_moved(token)
+    h = @outside.merge(@center)
+    h.select { |k,v| token == v }.keys
   end
   
   def game_winner?(moves)
@@ -79,8 +83,10 @@ class Grid
   def cross_winner?(moves)
     return false unless moves.include?(CENTER_POSITION)
     
-    moves.each do |x|
-      next unless moves.include?((x+4) % OUTSIDE_SIZE)
+    outside_moves = moves - [CENTER_POSITION]
+    
+    outside_moves.each do |x|
+      next unless outside_moves.include?((x+4) % OUTSIDE_SIZE)
       return true
     end
     

@@ -5,6 +5,8 @@ TODO
 Accept input from a player
 Determine which player moves first
 Notify user of game states: Move Available/Draw Game/Winning Game/Losing Game
+Game initializes correctly - calls output with right message,
+    calls generate_move and add to board when necessary
 
 DONE
 --------------------------------
@@ -32,12 +34,12 @@ Brain
 
 TODO
 --------------------------------
-Make a winning move
-Find the best next move
 
 DONE
 --------------------------------
 Block a possible win
+Make a winning move
+Find the best next move
 
 Grid
 

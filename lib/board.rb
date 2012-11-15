@@ -1,4 +1,4 @@
-require_relative "constants.rb"
+require_relative "constants"
 require_relative "grid.rb"
 
 GRID_TRANSLATION = {  "0" => 0, "1" => 1, "2" => 2,
@@ -36,7 +36,7 @@ class Board
   end
   
   def check_state
-    @grid.check_state
+    @grid.state
   end
   
 end
