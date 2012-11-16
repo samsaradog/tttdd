@@ -69,7 +69,7 @@ class MinNode < TreeNode
   end
   
   def need_to_change_value?(node)
-    node.value < value
+    node.value < @value
   end
   
   def value_at_limit?(min,max)
