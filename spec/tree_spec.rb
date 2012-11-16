@@ -10,8 +10,8 @@ describe "Tree" do
   
   context "draw game" do
     before(:each) do
-      X_DRAW_MOVES.each { | move | @grid.add(X_TOKEN,move) }
-      O_DRAW_MOVES.each { | move | @grid.add(O_TOKEN,move) }
+      X_DRAW_MOVES.each { | move | @grid.add!(X_TOKEN,move) }
+      O_DRAW_MOVES.each { | move | @grid.add!(O_TOKEN,move) }
     end
     
     it "min should have value 0" do
@@ -27,7 +27,7 @@ describe "Tree" do
   
   context "O winning min node" do
     before(:each) do
-      (0..2).each { | move | @grid.add(O_TOKEN,move)}
+      (0..2).each { | move | @grid.add!(O_TOKEN,move)}
       @node = MinNode.new(@grid)
     end
     
@@ -42,7 +42,7 @@ describe "Tree" do
   
   context "X winning max node" do
     before(:each) do
-      (0..2).each { | move | @grid.add(X_TOKEN,move)}
+      (0..2).each { | move | @grid.add!(X_TOKEN,move)}
       @node = MaxNode.new(@grid)
     end
     
@@ -63,8 +63,8 @@ describe "Tree" do
     #    | X | O
     
     before(:each) do
-      [0,2,5,7].each { | move | @grid.add(X_TOKEN,move)}
-      [1,3,4,8].each { | move | @grid.add(O_TOKEN,move)}
+      [0,2,5,7].each { | move | @grid.add!(X_TOKEN,move)}
+      [1,3,4,8].each { | move | @grid.add!(O_TOKEN,move)}
       @node = MaxNode.new(@grid)
     end
     
@@ -86,8 +86,8 @@ describe "Tree" do
     #    | O | X
     
     before(:each) do
-      [0,2,5,7].each { | pos | @grid.add(O_TOKEN,pos)}
-      [1,3,4,8].each { | pos | @grid.add(X_TOKEN,pos)}
+      [0,2,5,7].each { | pos | @grid.add!(O_TOKEN,pos)}
+      [1,3,4,8].each { | pos | @grid.add!(X_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -109,8 +109,8 @@ describe "Tree" do
     # O | X | O
     
     before(:each) do
-      [4,6,7,8].each { | pos | @grid.add(O_TOKEN,pos)}
-      [1,3,5].each   { | pos | @grid.add(X_TOKEN,pos)}
+      [4,6,7,8].each { | pos | @grid.add!(O_TOKEN,pos)}
+      [1,3,5].each   { | pos | @grid.add!(X_TOKEN,pos)}
       @node = MaxNode.new(@grid)
     end
     
@@ -133,8 +133,8 @@ describe "Tree" do
     # X | O | X
     
     before(:each) do
-      [1,3,5].each   { | pos | @grid.add(O_TOKEN,pos)}
-      [4,6,7,8].each { | pos | @grid.add(X_TOKEN,pos)}
+      [1,3,5].each   { | pos | @grid.add!(O_TOKEN,pos)}
+      [4,6,7,8].each { | pos | @grid.add!(X_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -157,8 +157,8 @@ describe "Tree" do
     # O | X |  
     
     before(:each) do
-      [2,5,7,8].each { | pos | @grid.add(X_TOKEN,pos)}
-      [0,1,6].each   { | pos | @grid.add(O_TOKEN,pos)}
+      [2,5,7,8].each { | pos | @grid.add!(X_TOKEN,pos)}
+      [0,1,6].each   { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -180,8 +180,8 @@ describe "Tree" do
     # O | O | X
     
     before(:each) do
-      [4,7,8].each { | pos | @grid.add(X_TOKEN,pos)}
-      [3,5,6].each { | pos | @grid.add(O_TOKEN,pos)}
+      [4,7,8].each { | pos | @grid.add!(X_TOKEN,pos)}
+      [3,5,6].each { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -203,8 +203,8 @@ describe "Tree" do
     # O |   |  
     
     before(:each) do
-      [7,8].each { | pos | @grid.add(X_TOKEN,pos)}
-      [6].each   { | pos | @grid.add(O_TOKEN,pos)}
+      [7,8].each { | pos | @grid.add!(X_TOKEN,pos)}
+      [6].each   { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -226,8 +226,8 @@ describe "Tree" do
     #   |   | X
     
     before(:each) do
-      [1,4].each { | pos | @grid.add(X_TOKEN,pos)}
-      [3,8].each { | pos | @grid.add(O_TOKEN,pos)}
+      [1,4].each { | pos | @grid.add!(X_TOKEN,pos)}
+      [3,8].each { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -249,8 +249,8 @@ describe "Tree" do
     #   |   |  
     
     before(:each) do
-      [1,8].each { | pos | @grid.add(X_TOKEN,pos)}
-      [0].each   { | pos | @grid.add(O_TOKEN,pos)}
+      [1,8].each { | pos | @grid.add!(X_TOKEN,pos)}
+      [0].each   { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -272,8 +272,8 @@ describe "Tree" do
     #   |   | X 
     
     before(:each) do
-      [4].each   { | pos | @grid.add(X_TOKEN,pos)}
-      [3,8].each { | pos | @grid.add(O_TOKEN,pos)}
+      [4].each   { | pos | @grid.add!(X_TOKEN,pos)}
+      [3,8].each { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MaxNode.new(@grid)
     end
     
@@ -295,8 +295,8 @@ describe "Tree" do
     #   |   |  
     
     before(:each) do
-      [8].each { | pos | @grid.add(X_TOKEN,pos)}
-      [1].each { | pos | @grid.add(O_TOKEN,pos)}
+      [8].each { | pos | @grid.add!(X_TOKEN,pos)}
+      [1].each { | pos | @grid.add!(O_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -314,8 +314,8 @@ describe "Tree" do
     #   |   |  
     
     before(:each) do
-      [8].each { | pos | @grid.add(O_TOKEN,pos)}
-      [1].each { | pos | @grid.add(X_TOKEN,pos)}
+      [8].each { | pos | @grid.add!(O_TOKEN,pos)}
+      [1].each { | pos | @grid.add!(X_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     
@@ -333,7 +333,7 @@ describe "Tree" do
     #   |   |  
     
     before(:each) do
-      [8].each { | pos | @grid.add(X_TOKEN,pos)}
+      [8].each { | pos | @grid.add!(X_TOKEN,pos)}
       @node = MinNode.new(@grid)
     end
     

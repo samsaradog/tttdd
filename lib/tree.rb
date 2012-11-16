@@ -3,7 +3,13 @@ require_relative "grid"
 class TreeNode
   attr_reader :value, :move
   
-  def get_value(state)
+  def initialize(grid,min,max)
+    @current_state = grid.state
+    @value = get_value_from_state(@current_state)
+    minimax(grid,min,max) if (:open == @current_state)
+  end
+  
+  def get_value_from_state(state)
     case state
     when :o_win then -1
     when :x_win then  1
@@ -14,6 +20,32 @@ class TreeNode
     end
   end
   
+  def minimax(grid,min,max)
+    available_moves = grid.group_moves(token)
+    
+    @value = get_limit_value(min,max)
+    next_move = nil 
+    
+    available_moves.each do | current_group |
+      next_move = current_group.shuffle[0]
+      
+      node = new_child_node(grid.dup.add!(token,next_move),min,max)
+      extract_node_value(node,next_move)
+      ( update_value(min,max) and break ) if value_at_limit?(min,max)
+    end
+    # if @move has not been set yet, it means that none of the attempted
+    # moves was within the limits, meaning they were all equally bad. We
+    # have to pick one anyway
+    @move = next_move unless (@move)
+  end
+  
+  def extract_node_value(node,next_move)
+    if need_to_change_value?(node)
+      @value = node.value
+      @move = next_move
+    end
+  end
+  
 end
 
 # this will be for the O move
@@ -21,40 +53,31 @@ end
 class MinNode < TreeNode
   
   def initialize(grid, min=-1, max=1)
-    current = grid.state
-    @value = get_value(current)
-    
-    minimax(grid,min,max) if (:open == current)
+    super(grid,min,max)
   end
   
-  def minimax(grid, min, max)
-    available_moves = grid.group_moves(O_TOKEN).shuffle
-    
-    @value = max
-    current_move = nil
-    
-    available_moves.each do | next_group |
-      new_grid = grid.dup
-      new_grid.add(O_TOKEN,next_group[0])
-      
-      node = MaxNode.new(new_grid,min,@value)
-      
-      if ( node.value < @value)
-        @value = node.value
-        @move  = next_group.shuffle[0]
-      else
-        current_move = next_group.shuffle[0]
-      end
-      
-      if ( @value <= min )
-        @value = min
-        break
-      end
-      
-    end #each loop
-    
-    @move = current_move unless (@move)
-    
+  def token
+    O_TOKEN
+  end
+  
+  def get_limit_value(min,max)
+    max
+  end
+  
+  def new_child_node(grid,min,max)
+    MaxNode.new(grid,min,@value)
+  end
+  
+  def need_to_change_value?(node)
+    node.value < value
+  end
+  
+  def value_at_limit?(min,max)
+    @value <= min
+  end
+  
+  def update_value(min,max)
+    @value = min
   end
   
 end
@@ -64,39 +87,31 @@ end
 class MaxNode < TreeNode
 
   def initialize(grid, min=-1, max=1)
-    current = grid.state
-    @value = get_value(current)
-    
-    minimax(grid,min,max) if ( :open == current )
+    super(grid,min,max)
   end
   
-  def minimax(grid, min, max)
-    available_moves = grid.group_moves(X_TOKEN).shuffle
-    
-    @value = min
-    current_move = nil
-    
-    available_moves.each do | next_group |
-      new_grid = grid.dup
-      new_grid.add(X_TOKEN,next_group[0])
-      node = MinNode.new(new_grid,@value,max)
-      
-      if ( node.value > @value)
-        @move  = next_group.shuffle[0]
-        @value = node.value
-      else
-        current_move = next_group.shuffle[0]
-      end
-      
-      if ( @value >= max )
-        @value = max
-        break
-      end
-      
-    end #each loop
-    
-    @move = current_move unless @move
-    
+  def token
+    X_TOKEN
+  end
+  
+  def get_limit_value(min,max)
+    min
+  end
+  
+  def new_child_node(grid,min,max)
+    MinNode.new(grid,@value,max)
+  end
+  
+  def need_to_change_value?(node)
+    node.value > @value
+  end
+  
+  def value_at_limit?(min,max)
+    @value >= max
+  end
+  
+  def update_value(min,max)
+    @value = max
   end
   
 end

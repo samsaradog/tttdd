@@ -110,13 +110,13 @@ describe "Game" do
     it "calls initialize when asked for a new game" do
       @game.stub(:validate_input).and_return(true)
       @game.should_receive(:initialize_game)
-      @game.add_response("y").should == true
+      @game.keep_playing?("y").should == true
     end
     
     it "calls output and returns false when asked to quit" do
       @game.stub(:validate_input).and_return(true)
       @game.should_receive(:output)
-      @game.add_response("n").should == false
+      @game.keep_playing?("n").should == false
     end
     
     it "calls move when it receives a legitimate move" do
@@ -124,15 +124,15 @@ describe "Game" do
       @game.stub(:validate_input).and_return(true)
       @game.stub(:state).and_return(:draw)
       @game.should_receive(:move).with(O_TOKEN,user_move)
-      @game.add_response(user_move).should == true
+      @game.keep_playing?(user_move).should == true
     end
     
     it "fails gracefully when it gets a bad move" do
       user_move = "0"
       @game.stub(:validate_input).and_return(true)
-      @game.add_response(user_move).should == true
+      @game.keep_playing?(user_move).should == true
       @game.should_receive(:output).with(user_move+MOVE_TAKEN_MESSAGE)
-      @game.add_response(user_move).should == true
+      @game.keep_playing?(user_move).should == true
     end
     
     it "makes a computer move after a user move when available" do
@@ -144,7 +144,7 @@ describe "Game" do
       
       @game.should_receive(:move).with(O_TOKEN,user_move)
       @game.should_receive(:move).with(X_TOKEN,computer_move)
-      @game.add_response(user_move).should == true
+      @game.keep_playing?(user_move).should == true
     end
   end
   
@@ -178,7 +178,7 @@ describe "Game" do
     it "notifies for bad input" do
       bad_input = "xyz"
       @game.should_receive(:output).with(BAD_INPUT_MESSAGE+bad_input+"\n")
-      @game.add_response(bad_input)
+      @game.keep_playing?(bad_input)
     end
   end
   

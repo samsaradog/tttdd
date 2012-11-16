@@ -23,7 +23,7 @@ class Grid
     return_value
   end
   
-  def add(token,position)
+  def add!(token,position)
     raise RangeError unless in_range?(position)
     raise RuntimeError unless ( 0 != available.count(position))
     
@@ -32,6 +32,7 @@ class Grid
     else
       @outside[position] = token
     end
+    self
   end
   
   def in_range?(position)
@@ -93,59 +94,54 @@ class Grid
     false
   end
   
-  def match(other)
-    return -1 if @center != other.center
+  def match?(other)
+    return false if @center != other.center
     
     (1..3).each do |x|
       rotated = rotate(other.outside, x)
-      return x if ( rotated == @outside )
+      return true if ( rotated == @outside )
     end
-    -1
+    false
   end
   
-  def adjust_keys(source,count,target)
+  def extract_adjusted_keys(source,count,target)
     source.each { |k,v| target[(k+(count*2)) % OUTSIDE_SIZE] = v }
   end
   
   def rotate(moves,count)
     return_value = {}
-    adjust_keys(moves,count,return_value)
+    extract_adjusted_keys(moves,count,return_value)
     return_value
   end
   
   def rotate!(count)
     new_hash = {}
-    adjust_keys(@outside,count,new_hash)
+    extract_adjusted_keys(@outside,count,new_hash)
     @outside.replace(new_hash)
   end
   
   def group_moves(token)
-    available_moves = available
     buckets = []
     
-    available_moves.each do |move|
-      new_grid = dup
-      new_grid.add(token,move)
-      
-      buckets << [move] unless update_buckets(token,new_grid,move,buckets)
+    available.each do |move|
+      new_grid = self.dup.add!(token,move)
+      buckets << [move] unless updated_buckets?(token,new_grid,move,buckets)
     end
-    buckets
     
+    buckets.shuffle
   end
   
-  def update_buckets(token,grid,move,buckets)
+  def updated_buckets?(token,new_grid,move,buckets)
     return_value = false
     
     buckets.each do |bucket|
-      bucket_grid = dup
-      bucket_grid.add(token,bucket[0])
-
-      if ( 0 <= grid.match(bucket_grid))
+      if new_grid.match?(self.dup.add!(token,bucket[0]))
         bucket << move
         return_value = true
         break
       end
-    end
+    end #iteration
+    
     return_value
   end
   

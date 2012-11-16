@@ -16,16 +16,15 @@ class Board
     @inverted = GRID_TRANSLATION.invert
   end
   
-  def add(token,position)
+  def add!(token,position)
     grid_position = GRID_TRANSLATION[position]
-    @grid.add(token,grid_position)
+    @grid.add!(token,grid_position)
 
-    @state = check_state
+    @state = grid_state
   end
   
   def show
     display = INITIAL_BOARD.dup
-    # inverted = GRID_TRANSLATION.invert
     
     [X_TOKEN,O_TOKEN].each do |token|
       grid_moves = @grid.has_moved(token)
@@ -38,10 +37,7 @@ class Board
     display
   end
   
-  def prompt
-  end
-  
-  def check_state
+  def grid_state
     @grid.state
   end
   

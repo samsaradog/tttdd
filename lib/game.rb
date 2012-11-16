@@ -12,37 +12,33 @@ class Game
     
     while(1)
       display
-      break unless add_response(input)
+      break unless keep_playing?(input)
     end
   end
   
-  def add_response(response)
+  def keep_playing?(response)
     unless validate_input(response) 
       output(BAD_INPUT_MESSAGE+response+"\n")
       return true
     end
     
-    return_value = true
-    
     case response
-    when NEW_GAME_RE then initialize_game
-      
-    when QUIT_GAME_RE 
-      output(EXIT_MESSAGE) 
-      return_value = false
-    
-    when MOVE_RANGE_RE
-      begin
-        move(O_TOKEN,response)
-      rescue
-        output(response+MOVE_TAKEN_MESSAGE)
-      else
-        move(X_TOKEN,generate_x_move) if (:open == state)
-      end
-      
+    when QUIT_GAME_RE  then return (output(EXIT_MESSAGE) or false)
+    when NEW_GAME_RE   then initialize_game
+    when MOVE_RANGE_RE then process_move(response)
     end
   
-    return_value
+    true
+  end
+  
+  def process_move(response)
+    begin
+      move(O_TOKEN,response)
+    rescue
+      output(response+MOVE_TAKEN_MESSAGE)
+    else
+      move(X_TOKEN,generate_x_move) if (:open == state)
+    end
   end
   
   def generate_x_move
@@ -62,7 +58,6 @@ class Game
   end
   
   def notification
-    
     case state
     when :draw  then DRAW_GAME_MESSAGE
     when :x_win then X_WINS_MESSAGE
@@ -77,7 +72,7 @@ class Game
   end
   
   def move(token, position)
-    @board.add(token,position)
+    @board.add!(token,position)
   end
   
   def state
