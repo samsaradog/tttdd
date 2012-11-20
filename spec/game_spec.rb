@@ -100,6 +100,7 @@ describe "Game" do
     
     it "returns false for bad input" do
       @game.stub(:state).and_return(:draw)
+      @game.move(X_TOKEN,"0")
       inputs = ["ab","9","8"]
       inputs.each { |x| @game.validate_input(x).should == nil }
     end
@@ -157,6 +158,7 @@ describe "Game" do
     
     it "prompts for another game when game is finished" do
       @game.stub(:state).and_return(:draw)
+      @game.move(X_TOKEN,"0")
       @game.prompt.should == GAME_COMPLETED_MESSAGE
     end
     

@@ -12,39 +12,55 @@ class Grid
     @center = { CENTER_POSITION => Z_TOKEN }
   end
   
-  def ==(other)
-    ( @center == other.center ) && ( @outside == other.outside )
-  end
-  
-  def dup
-    return_value = Grid.new
-    return_value.center.merge!(@center)
-    return_value.outside.merge!(@outside)
-    return_value
-  end
-  
   def add!(token,position)
     raise RangeError unless in_range?(position)
     raise RuntimeError unless ( 0 != available.count(position))
     
     if ( CENTER_POSITION == position )
-      @center[CENTER_POSITION] = token
+      @center[position] = token
     else
       @outside[position] = token
     end
     self
   end
   
+  def dup
+    return_value = Grid.new
+    return_value.center.merge!(center)
+    return_value.outside.merge!(outside)
+    return_value
+  end
+  
+  def ==(other)
+    ( center == other.center ) && ( outside == other.outside )
+  end
+  
+  def match?(other) 
+    return false if center != other.center
+    
+    (1..3).each do |x|
+      rotated = rotate(other.outside, x)
+      return true if ( rotated == outside )
+    end
+    false
+  end
+  
+  def rotate(moves,count) 
+    return_value = {}
+    moves.each { |k,v| return_value[(k+(count*2)) % OUTSIDE_SIZE] = v }
+    return_value
+  end
+  
   def in_range?(position)
     position.to_s =~ /[0-8]/
   end
   
-  def available
-    has_moved(Z_TOKEN)
-  end
-  
   def grid_full?
     available.empty?
+  end
+  
+  def available
+    find_moves(Z_TOKEN)
   end
   
   def is_draw?
@@ -59,12 +75,37 @@ class Grid
   end
   
   def has_winner?(token)
-    game_winner?(has_moved(token))
+    game_winner?(find_moves(token))
   end
   
-  def has_moved(token)
-    h = @outside.merge(@center)
+  def find_moves(token)
+    h = @outside.merge(center)
     h.select { |k,v| token == v }.keys
+  end
+  
+  def group_moves(token)
+    buckets = []
+    
+    available.each do |move|
+      new_grid = self.dup.add!(token,move)
+      buckets << [move] unless updated_buckets?(token,new_grid,move,buckets)
+    end
+    
+    buckets.shuffle
+  end
+  
+  def updated_buckets?(token,new_grid,move,buckets) #transparent
+    return_value = false
+    
+    buckets.each do |bucket|
+      if new_grid.match?(self.dup.add!(token,bucket[0]))
+        bucket << move
+        return_value = true
+        break
+      end
+    end
+    
+    return_value
   end
   
   def game_winner?(moves)
@@ -92,57 +133,6 @@ class Grid
     end
     
     false
-  end
-  
-  def match?(other)
-    return false if @center != other.center
-    
-    (1..3).each do |x|
-      rotated = rotate(other.outside, x)
-      return true if ( rotated == @outside )
-    end
-    false
-  end
-  
-  def extract_adjusted_keys(source,count,target)
-    source.each { |k,v| target[(k+(count*2)) % OUTSIDE_SIZE] = v }
-  end
-  
-  def rotate(moves,count)
-    return_value = {}
-    extract_adjusted_keys(moves,count,return_value)
-    return_value
-  end
-  
-  def rotate!(count)
-    new_hash = {}
-    extract_adjusted_keys(@outside,count,new_hash)
-    @outside.replace(new_hash)
-  end
-  
-  def group_moves(token)
-    buckets = []
-    
-    available.each do |move|
-      new_grid = self.dup.add!(token,move)
-      buckets << [move] unless updated_buckets?(token,new_grid,move,buckets)
-    end
-    
-    buckets.shuffle
-  end
-  
-  def updated_buckets?(token,new_grid,move,buckets)
-    return_value = false
-    
-    buckets.each do |bucket|
-      if new_grid.match?(self.dup.add!(token,bucket[0]))
-        bucket << move
-        return_value = true
-        break
-      end
-    end #iteration
-    
-    return_value
   end
   
 end

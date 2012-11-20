@@ -18,6 +18,10 @@ DRAW_GAME_MESSAGE = "Draw Game"
 X_WINS_MESSAGE    = "X is the Winner!"
 O_WINS_MESSAGE    = "O is the Winner!"
 
+STATE_TO_NOTIFICATION = { :draw  => DRAW_GAME_MESSAGE,
+                          :x_win => X_WINS_MESSAGE,
+                          :o_win => O_WINS_MESSAGE }
+                          
 EXIT_MESSAGE = "Thank you for playing!\n"
 
 MOVE_TAKEN_MESSAGE = " not available. Please choose another\n"

@@ -5,6 +5,7 @@ class Game
   
   def initialize
     @board = Board.new
+    @state_params = OpenGameParams.new
   end
   
   def run
@@ -31,7 +32,7 @@ class Game
     true
   end
   
-  def process_move(response)
+  def process_move(response) #state specific
     begin
       move(O_TOKEN,response)
     rescue
@@ -49,37 +50,24 @@ class Game
     @board.show
   end
   
-  def prompt
-    if (:open == state)
-      MOVE_MESSAGE
-    else
-      GAME_COMPLETED_MESSAGE
-    end
+  def prompt #state specific
+    @state_params.prompt
   end
   
-  def notification
-    case state
-    when :draw  then DRAW_GAME_MESSAGE
-    when :x_win then X_WINS_MESSAGE
-    when :o_win then O_WINS_MESSAGE
-    end
+  def notification # state specific
+    STATE_TO_NOTIFICATION[state]
   end
   
-  def display
-    output(notification)
-    output(board)
-    output(prompt)
-  end
-  
-  def move(token, position)
+  def move(token, position) # state can change here
     @board.add!(token,position)
+    @state_params = EndGameParams.new unless (:open == state)
   end
   
   def state
     @board.state
   end
   
-  def initialize_game
+  def initialize_game # state can change here
     @board = Board.new
     
     if ( human_first? )
@@ -88,12 +76,18 @@ class Game
       output(PLAYER_X_FIRST_MESSAGE)
       move(X_TOKEN,generate_x_move)
     end
+    
+    @state_params = EndGameParams.new unless (:open == state)
   end
   
   def validate_input(response)
-    test_re = Regexp.union(NEW_GAME_RE,QUIT_GAME_RE)
-    test_re = Regexp.union(test_re,MOVE_RANGE_RE) if ( :open == state )
-    test_re =~ response and ( 1 == response.length )
+    @state_params.validation_re =~ response and ( 1 == response.length )
+  end
+  
+  def display
+    output(notification)
+    output(board)
+    output(prompt)
   end
   
   def input
@@ -108,4 +102,24 @@ class Game
     ( 0 == rand(2) )
   end
   
+end
+
+class OpenGameParams
+  def prompt
+    MOVE_MESSAGE
+  end
+  
+  def validation_re
+    Regexp.union(NEW_GAME_RE,QUIT_GAME_RE,MOVE_RANGE_RE)
+  end
+end
+
+class EndGameParams
+  def prompt
+    GAME_COMPLETED_MESSAGE
+  end
+  
+  def validation_re
+    Regexp.union(NEW_GAME_RE,QUIT_GAME_RE)
+  end
 end

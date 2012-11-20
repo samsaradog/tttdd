@@ -106,10 +106,10 @@ describe "Grid" do
     
     it "rotates correctly" do
       (0..2).each { |x| @another_grid.add!(X_TOKEN,x) }
-      @another_grid.rotate!(2)
-      @another_grid.should_not == @grid
-      @another_grid.rotate!(2)
-      @another_grid.should == @grid
+      outside = @another_grid.rotate(@another_grid.outside,2)
+      outside.should_not == @grid.outside
+      outside = @another_grid.rotate(outside,2)
+      outside.should == @grid.outside
     end
     
   end
